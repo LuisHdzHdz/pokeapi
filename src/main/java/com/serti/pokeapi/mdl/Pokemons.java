@@ -10,6 +10,20 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "pokemons")
 public class Pokemons {
+	
+	public Pokemons(int idpokemons, String name, int base_experience, int hieght, boolean is_default, int weight,
+			int id_evolution_chain) {
+		super();
+		this.idpokemons = idpokemons;
+		this.name = name;
+		this.base_experience = base_experience;
+		this.hieght = hieght;
+		this.is_default = is_default;
+		this.weight = weight;
+		this.id_evolution_chain = id_evolution_chain;
+	}
+
+
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private int idpokemons;
@@ -67,6 +81,13 @@ public class Pokemons {
 	}
 	public void setId_evolution_chain(int id_evolution_chain) {
 		this.id_evolution_chain = id_evolution_chain;
+	}
+	
+
+	public String toString() {
+		return "Pokemons [idpokemons=" + idpokemons + ", name=" + name + ", base_experience=" + base_experience
+				+ ", hieght=" + hieght + ", is_default=" + is_default + ", weight=" + weight + ", id_evolution_chain="
+				+ id_evolution_chain + "]";
 	}
 	
 	

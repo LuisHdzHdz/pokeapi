@@ -25,7 +25,7 @@ public class HttpClient {
                 resultContent = EntityUtils.toString(entity);
             }
         } catch (IOException | ParseException e) {
-            e.printStackTrace();
+        	return "Not Found";
         }
         return resultContent;
     }

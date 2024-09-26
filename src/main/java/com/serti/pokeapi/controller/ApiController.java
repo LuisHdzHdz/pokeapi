@@ -1,4 +1,4 @@
-package com.serti.pokeapi;
+package com.serti.pokeapi.controller;
 
 
 import org.slf4j.Logger;
@@ -49,16 +49,21 @@ public class ApiController {
 	
 	@CrossOrigin(origins = "http://localhost:4200")
 	@GetMapping("/pokemon/evolution-chain")
-    public String gatEvolutionChain(@RequestParam(value = "id") String id, HttpServletRequest request) {
-		AccessLog accesParam = new AccessLog();
-		String urlChain =String.format("https://pokeapi.co/api/v2/evolution-chain/%s/",id);
-		String response = client.get(urlChain);
-		String clientIp = requestService.getClientIp(request);
-		accesParam.setClient(clientIp);
-		accesParam.setResource("/pokemon/evolution-chain");
-		accesLogService.saveAccesLog(accesParam);
-		LOGGER.info("Ip del cliente: {}",clientIp);
-        return response;
+    public ResponseEntity<String> gatEvolutionChain(@RequestParam(value = "id") String id, HttpServletRequest request) {
+		 LOGGER.error("Inicia gatEvolutionChain () param: {}", id);
+
+			AccessLog accesParam = new AccessLog();
+			String urlChain =String.format("https://pokeapi.co/api/v2/evolution-chain/%s/",id);
+			String response = client.get(urlChain);
+			LOGGER.info("Url request: {}",urlChain);
+			LOGGER.info("Response: {}",response);
+			String clientIp = requestService.getClientIp(request);
+			accesParam.setClient(clientIp);
+			accesParam.setResource("/pokemon/evolution-chain");
+			accesLogService.saveAccesLog(accesParam);
+			LOGGER.info("Ip del cliente: {}",clientIp);
+			ResponseEntity<String> response1 = ResponseEntity.ok(response);
+			return response1;
     }
 	
 	@CrossOrigin(origins = "http://localhost:4200")
@@ -78,15 +83,17 @@ public class ApiController {
 	@CrossOrigin(origins = "http://localhost:4200")
 	@PostMapping("/pokemon/save-pokemon")
     public ResponseEntity<?>  savePokemon(@RequestBody Pokemons pokemon, HttpServletRequest request) {
+		LOGGER.info("Inicia savePokemon(): param{}",pokemon.toString());
 		AccessLog accesParam = new AccessLog();
 		String clientIp = requestService.getClientIp(request);
 		accesParam.setClient(clientIp);
-		accesParam.setResource("/pokemon/get-sprite");
+		accesParam.setResource("/pokemon/save-pokemon");
 		try {
 			accesLogService.saveAccesLog(accesParam);
 			pokemosService.savePokemon(pokemon);
 			LOGGER.info("Ip del cliente: {}",clientIp);
 		} catch (Exception e) {
+			LOGGER.info("Excepcion al guardar pokemo: {}",e.getLocalizedMessage());
 			return new ResponseEntity<String>(e.getLocalizedMessage(), HttpStatus.CONFLICT);
 		}
 		
