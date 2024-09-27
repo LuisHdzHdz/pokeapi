@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.serti.pokeapi.mdl.AccessLog;
 import com.serti.pokeapi.mdl.Pokemons;
+import com.serti.pokeapi.mdl.Species;
 import com.serti.pokeapi.service.AccesLogService;
 import com.serti.pokeapi.service.PokemonsService;
 import com.serti.pokeapi.service.RequestService;
+import com.serti.pokeapi.service.SpecieService;
 import com.serti.pokeapi.util.HttpClient;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,6 +32,9 @@ public class ApiController {
     private AccesLogService accesLogService;
 	@Autowired
     private PokemonsService pokemosService;
+	@Autowired
+    private SpecieService specieService;
+	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApiController.class);
 	HttpClient  client = new HttpClient();
 	
@@ -102,6 +107,26 @@ public class ApiController {
 	
 	@CrossOrigin(origins = "http://localhost:4200")
 	@PostMapping("/pokemon/save-species")
+    public ResponseEntity<?>  saveSpecie(@RequestBody Species specie, HttpServletRequest request) {
+		LOGGER.info("Inicia saveSpecie(): param{}",specie.toString());
+		AccessLog accesParam = new AccessLog();
+		String clientIp = requestService.getClientIp(request);
+		accesParam.setClient(clientIp);
+		accesParam.setResource("/pokemon/save-species");
+		try {
+			accesLogService.saveAccesLog(accesParam);
+			specieService.saveSpecie(specie);
+			LOGGER.info("Ip del cliente: {}",clientIp);
+		} catch (Exception e) {
+			LOGGER.info("Excepcion al guardar pokemo: {}",e.getLocalizedMessage());
+			return new ResponseEntity<String>(e.getLocalizedMessage(), HttpStatus.CONFLICT);
+		}
+		
+		return new ResponseEntity<String>("Pokemon registred", HttpStatus.OK);
+    }
+	
+	@CrossOrigin(origins = "http://localhost:4200")
+	@PostMapping("/pokemon/save-species-1")
     public ResponseEntity<?>  savePokemon(@RequestBody String idspecie, HttpServletRequest request) {
 		String urlgetSpecie =String.format("https://pokeapi.co/api/v2/evolution-chain/%s/",idspecie);
 		AccessLog accesParam = new AccessLog();
