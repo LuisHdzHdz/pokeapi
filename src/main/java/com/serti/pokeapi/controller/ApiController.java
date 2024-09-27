@@ -145,7 +145,7 @@ public class ApiController {
 	
 	@CrossOrigin(origins = "http://localhost:4200")
 	@GetMapping("/pokemon/get-species")
-    public ResponseEntity<String> gatPokrmonSpecies(@RequestParam(value = "id") String id, HttpServletRequest request) {
+    public ResponseEntity<String> gatPokemonSpecies(@RequestParam(value = "id") String id, HttpServletRequest request) {
 		 LOGGER.error("Start gatPokrmonSpecies () param: {}", id);
 
 			AccessLog accesParam = new AccessLog();
@@ -163,25 +163,25 @@ public class ApiController {
     }
 	
 	@CrossOrigin(origins = "http://localhost:4200")
-	@PostMapping("/pokemon/save-varietie")
+	@PostMapping("/pokemon/save-variety")
 	@Transactional
-    public ResponseEntity<?>  saveVarietie(@RequestBody Varieties varietie, HttpServletRequest request) {
-		LOGGER.info("Inicia saveVarietie(): param{}",varietie.toString());
+    public ResponseEntity<?>  saveVariety(@RequestBody Varieties variety, HttpServletRequest request) {
+		LOGGER.info("Inicia saveVariety(): param{}",variety.toString());
 		AccessLog accesParam = new AccessLog();
 		String clientIp = requestService.getClientIp(request);
 		accesParam.setClient(clientIp);
-		accesParam.setResource("/pokemon/save-varietie");
+		accesParam.setResource("/pokemon/save-variety");
 		try {
 			accesLogService.saveAccesLog(accesParam);
-			boolean existSpecie = varietiesService.existById(varietie.getName());
+			boolean existSpecie = varietiesService.existById(variety.getName());
 			if(!existSpecie) {
-				varietiesService.saveVarietie(varietie);
+				varietiesService.saveVariety(variety);
 			}else {
-				LOGGER.info("Varietie already exists: {}",varietie.getName());
+				LOGGER.info("Variety already exists: {}",variety.getName());
 			}
 			LOGGER.info("Ip client: {}",clientIp);
 		} catch (Exception e) {
-			LOGGER.info("Error saveng varietie: {}",e.getLocalizedMessage());
+			LOGGER.info("Error saving variety: {}",e.getLocalizedMessage());
 			return new ResponseEntity<String>(e.getLocalizedMessage(), HttpStatus.CONFLICT);
 		}
 		
