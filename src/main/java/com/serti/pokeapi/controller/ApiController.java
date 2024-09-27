@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +26,7 @@ import com.serti.pokeapi.util.HttpClient;
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 public class ApiController {
 	@Autowired
     private RequestService requestService;
@@ -95,10 +97,16 @@ public class ApiController {
 		accesParam.setResource("/pokemon/save-pokemon");
 		try {
 			accesLogService.saveAccesLog(accesParam);
-			pokemosService.savePokemon(pokemon);
+			boolean existPokemon = pokemosService.existById(pokemon.getIdpokemons());
+			if(!existPokemon) {
+				pokemosService.savePokemon(pokemon);
+			}else {
+				LOGGER.info("Pokemon already exists: {}",pokemon.getName());
+			}
+			
 			LOGGER.info("Ip del cliente: {}",clientIp);
 		} catch (Exception e) {
-			LOGGER.info("Excepcion al guardar pokemo: {}",e.getLocalizedMessage());
+			LOGGER.info("Excepcion al guardar pokemon: {}",e.getLocalizedMessage());
 			return new ResponseEntity<String>(e.getLocalizedMessage(), HttpStatus.CONFLICT);
 		}
 		
@@ -107,6 +115,7 @@ public class ApiController {
 	
 	@CrossOrigin(origins = "http://localhost:4200")
 	@PostMapping("/pokemon/save-species")
+	@Transactional
     public ResponseEntity<?>  saveSpecie(@RequestBody Species specie, HttpServletRequest request) {
 		LOGGER.info("Inicia saveSpecie(): param{}",specie.toString());
 		AccessLog accesParam = new AccessLog();
@@ -115,7 +124,12 @@ public class ApiController {
 		accesParam.setResource("/pokemon/save-species");
 		try {
 			accesLogService.saveAccesLog(accesParam);
+			boolean existSpecie = specieService.existById(specie.getSpeciesid());
+			if(!existSpecie) {
 			specieService.saveSpecie(specie);
+			}else {
+				LOGGER.info("Specie already exists: {}",specie.getName());
+			}
 			LOGGER.info("Ip del cliente: {}",clientIp);
 		} catch (Exception e) {
 			LOGGER.info("Excepcion al guardar pokemo: {}",e.getLocalizedMessage());

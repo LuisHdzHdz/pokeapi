@@ -14,4 +14,8 @@ public class SpecieService {
 	public void saveSpecie(Species specie){
 		speciesDao.saveSpecie(specie);
 	}
+	
+	public boolean existById(int speciesid){
+		return speciesDao.existById(speciesid);
+	}
 }

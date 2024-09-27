@@ -1,9 +1,8 @@
 package com.serti.pokeapi.mdl;
 
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
@@ -11,10 +10,10 @@ import jakarta.persistence.Table;
 @Table(name = "species")
 public class Species {
 	
+
 	@Id
-	@GeneratedValue(strategy= GenerationType.AUTO) 
 	@Column(name = "speciesid")
-	private int id;
+	private int speciesid;
 	@Column(name = "name")
 	private String name;
 	@Column(name = "url")
@@ -28,11 +27,11 @@ public class Species {
 	public void setPokemon_id(int pokemon_id) {
 		this.pokemon_id = pokemon_id;
 	}
-	public int getId() {
-		return id;
+	public int getSpeciesid() {
+		return speciesid;
 	}
-	public void setId(int id) {
-		this.id = id;
+	public void setSpeciesid(int speciesid) {
+		this.speciesid = speciesid;
 	}
 	public String getName() {
 		return name;
@@ -46,10 +45,11 @@ public class Species {
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	
 	@Override
 	public String toString() {
-		return "Species [id=" + id + ", name=" + name + ", url=" + url + "]";
+		return "Species [speciesid=" + speciesid + ", name=" + name + ", url=" + url + ", pokemon_id=" + pokemon_id
+				+ "]";
 	}
+	
 		
 }

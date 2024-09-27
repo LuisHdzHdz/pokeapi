@@ -10,5 +10,6 @@
         <!-- Add your classes here -->
         <mapping class="com.serti.pokeapi.mdl.AccessLog" />
         <mapping class="com.serti.pokeapi.mdl.Pokemons" />
+        <mapping class="com.serti.pokeapi.mdl.Species" />
     </session-factory>
 </hibernate-configuration>

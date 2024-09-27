@@ -14,6 +14,7 @@ public class Pokemons {
 	public Pokemons(int idpokemons, String name, int base_experience, int hieght, boolean is_default, int weight,
 			int id_evolution_chain) {
 		super();
+		
 		this.idpokemons = idpokemons;
 		this.name = name;
 		this.base_experience = base_experience;
@@ -25,7 +26,8 @@ public class Pokemons {
 
 
 	@Id
-	@GeneratedValue(strategy= GenerationType.AUTO)
+//	@GeneratedValue(strategy= GenerationType.AUTO)
+	@Column(name = "idpokemons")
 	private int idpokemons;
 	@Column(name = "name")
 	private String name;

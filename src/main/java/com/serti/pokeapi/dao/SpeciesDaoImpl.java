@@ -2,6 +2,7 @@ package com.serti.pokeapi.dao;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -25,10 +26,20 @@ public class SpeciesDaoImpl implements SpeciesDao{
             session.close();
             
         } catch (Exception e) {
-        	LOGGER.info("Exception saving pokemon",e.getLocalizedMessage());
+        	LOGGER.info("Exception saving specie",e.getLocalizedMessage());
             e.printStackTrace();
         }
 		
+	}
+	
+	@Override
+	public boolean existById(int speciesid) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
+        String hql = "SELECT COUNT(e) FROM Species e WHERE e.speciesid = :speciesid";
+        Query<Long> query = session.createQuery(hql, Long.class);
+        query.setParameter("speciesid", speciesid);
+        Long count = query.uniqueResult();
+        return count != null && count > 0;
 	}
 
 }

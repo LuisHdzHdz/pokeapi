@@ -15,4 +15,8 @@ public class PokemonsService {
 	public void savePokemon(Pokemons pokemon){
 		pokemonsDao.savePokemon(pokemon);
 	}
+	
+	public boolean existById(int idpokemos){
+		return pokemonsDao.existById(idpokemos);
+	}
 }
