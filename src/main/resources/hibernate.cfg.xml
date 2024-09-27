@@ -11,5 +11,6 @@
         <mapping class="com.serti.pokeapi.mdl.AccessLog" />
         <mapping class="com.serti.pokeapi.mdl.Pokemons" />
         <mapping class="com.serti.pokeapi.mdl.Species" />
+        <mapping class="com.serti.pokeapi.mdl.Varieties" />
     </session-factory>
 </hibernate-configuration>

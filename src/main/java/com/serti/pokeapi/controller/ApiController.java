@@ -17,10 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.serti.pokeapi.mdl.AccessLog;
 import com.serti.pokeapi.mdl.Pokemons;
 import com.serti.pokeapi.mdl.Species;
+import com.serti.pokeapi.mdl.Varieties;
 import com.serti.pokeapi.service.AccesLogService;
 import com.serti.pokeapi.service.PokemonsService;
 import com.serti.pokeapi.service.RequestService;
 import com.serti.pokeapi.service.SpecieService;
+import com.serti.pokeapi.service.VarietiesService;
 import com.serti.pokeapi.util.HttpClient;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,6 +38,8 @@ public class ApiController {
     private PokemonsService pokemosService;
 	@Autowired
     private SpecieService specieService;
+	@Autowired
+    private VarietiesService varietiesService;
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApiController.class);
 	HttpClient  client = new HttpClient();
@@ -140,22 +144,48 @@ public class ApiController {
     }
 	
 	@CrossOrigin(origins = "http://localhost:4200")
-	@PostMapping("/pokemon/save-species-1")
-    public ResponseEntity<?>  savePokemon(@RequestBody String idspecie, HttpServletRequest request) {
-		String urlgetSpecie =String.format("https://pokeapi.co/api/v2/evolution-chain/%s/",idspecie);
+	@GetMapping("/pokemon/get-species")
+    public ResponseEntity<String> gatPokrmonSpecies(@RequestParam(value = "id") String id, HttpServletRequest request) {
+		 LOGGER.error("Start gatPokrmonSpecies () param: {}", id);
+
+			AccessLog accesParam = new AccessLog();
+			String urlSpecies =String.format("https://pokeapi.co/api/v2/pokemon-species/%s/",id);
+			String response = client.get(urlSpecies);
+			LOGGER.info("Url request: {}",urlSpecies);
+			LOGGER.info("Response: {}",response);
+			String clientIp = requestService.getClientIp(request);
+			accesParam.setClient(clientIp);
+			accesParam.setResource("/pokemon/evolution-chain");
+			accesLogService.saveAccesLog(accesParam);
+			LOGGER.info("Ip client: {}",clientIp);
+			ResponseEntity<String> responseSpecies = ResponseEntity.ok(response);
+			return responseSpecies;
+    }
+	
+	@CrossOrigin(origins = "http://localhost:4200")
+	@PostMapping("/pokemon/save-varietie")
+	@Transactional
+    public ResponseEntity<?>  saveVarietie(@RequestBody Varieties varietie, HttpServletRequest request) {
+		LOGGER.info("Inicia saveVarietie(): param{}",varietie.toString());
 		AccessLog accesParam = new AccessLog();
 		String clientIp = requestService.getClientIp(request);
-		String response = client.get(urlgetSpecie);
 		accesParam.setClient(clientIp);
-		accesParam.setResource("/pokemon/get-species");
+		accesParam.setResource("/pokemon/save-varietie");
 		try {
 			accesLogService.saveAccesLog(accesParam);
-			LOGGER.info("Ip del cliente: {}",clientIp);
+			boolean existSpecie = varietiesService.existById(varietie.getName());
+			if(!existSpecie) {
+				varietiesService.saveVarietie(varietie);
+			}else {
+				LOGGER.info("Varietie already exists: {}",varietie.getName());
+			}
+			LOGGER.info("Ip client: {}",clientIp);
 		} catch (Exception e) {
+			LOGGER.info("Error saveng varietie: {}",e.getLocalizedMessage());
 			return new ResponseEntity<String>(e.getLocalizedMessage(), HttpStatus.CONFLICT);
 		}
 		
-		return new ResponseEntity<String>("Specie registred", HttpStatus.OK);
+		return new ResponseEntity<String>("Varietie registred", HttpStatus.OK);
     }
 	
 	
